@@ -1,4 +1,5 @@
 # CS301-101-team7_SemanticSegmentation
+# Team Members: Peter Akdemir, Joshua Quizon
 
 ## Milestone 1 (Environment Preparation)
 **This list describes the steps that were taken to setup the project environment and complete milestone 1**
