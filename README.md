@@ -1,6 +1,7 @@
 # CS301-101-team7_SemanticSegmentation
 
-## Milestone 1
+## Milestone 1 (Environment Preparation)
+**This list describes the steps that were taken to setup the project environment and complete milestone 1**
 - created a Github repo with a README.md
 - added directory 288 contents to this repo
 - created a branch named milestone-1, committed changes and pushed to remote
@@ -26,3 +27,5 @@
     - NNI and ngrok sessions are started on the same port using nnictl create and get_ipython().system_raw
     - curl checks for the public ngrok url
   - the result set of steps leads to a creation of a local NNI session hosted on a public ngrok url: ![image](https://user-images.githubusercontent.com/98120760/198899088-86520d40-4173-4505-bd5d-60715131da17.png)
+- the link to the milestone-1 branch will be submitted on Canvas
+- the TA will be added as a collaborator and the Colab notebook will also be shared with him
