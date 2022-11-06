@@ -48,3 +48,15 @@ The mask_dataset (which will be used for training) must also be converted to a s
 Given these values, the mask_dataset is looped through to convert the rgb to one of the above listed classification numbers and append it to a new numpy array named labels.<br><br>
 
 Note that the previous step gives each pixel in the data set a value between 0 and 5 inclusive.  However, this is not categorical, meaning a pixel being part of a road is not determined with a simple yes or no.  Therefore, the dataset is split over the 6 classes--building, land, road, vegetation, water, and unlabeled.  This is similar to the kaggle dataset for the Logistic Regression homework assignment, where there were several features as columns that held a value 0 or 1.
+
+## Training and Validation Epochs vs Loss Plot
+![image](https://user-images.githubusercontent.com/98120760/200154523-a7f3d3fe-64a6-477d-84a1-599644b89e5f.png)
+- The above image depicts the relationship between the number of epochs and loss
+- The loss function used in this program is combination of dice loss and focal loss, termed as total_loss 
+- The model was trained for 100 epochs total, and the loss was calculated for each epoch in the validation set and the training set
+- The training set loss gradually lessens as the number of epochs increases--this is expeced since we are using the same training set for each epoch
+- However, the validation set loss seems to have the right approach until about 40 epochs
+    - There is a sudden rise in validation loss as the number of epochs passes 40
+    - This implies that the model is overfitting with the training data
+    - This is expected, as the model gets more and more used to the same training set it is given
+    - In addition, there is not much regularization for this model as of right now
