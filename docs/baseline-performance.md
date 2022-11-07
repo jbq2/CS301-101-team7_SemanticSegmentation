@@ -50,13 +50,19 @@ Given these values, the mask_dataset is looped through to convert the rgb to one
 Note that the previous step gives each pixel in the data set a value between 0 and 5 inclusive.  However, this is not categorical, meaning a pixel being part of a road is not determined with a simple yes or no.  Therefore, the dataset is split over the 6 classes--building, land, road, vegetation, water, and unlabeled.  This is similar to the kaggle dataset for the Logistic Regression homework assignment, where there were several features as columns that held a value 0 or 1.
 
 ## Training and Validation Epochs vs Loss Plot
-![image](https://user-images.githubusercontent.com/98120760/200154523-a7f3d3fe-64a6-477d-84a1-599644b89e5f.png)
+![image](https://user-images.githubusercontent.com/98120760/200203234-8f3aa131-6ef6-469c-85f8-342879df930f.png)
 - The above image depicts the relationship between the number of epochs and loss
 - The loss function used in this program is combination of dice loss and focal loss, termed as total_loss 
 - The model was trained for 100 epochs total, and the loss was calculated for each epoch in the validation set and the training set
-- The training set loss gradually lessens as the number of epochs increases--this is expeced since we are using the same training set for each epoch
-- However, the validation set loss seems to have the right approach until about 40 epochs
-    - There is a sudden rise in validation loss as the number of epochs passes 40
+- The training set loss gradually lessens as the number of epochs increases--this is expected since we are using the same training set for each epoch
+- However, the validation set loss seems to have the right approach until about 30-40 epochs
+    - There is a slight rise in validation loss as the number of epochs passes the 30 or 40 range
     - This implies that the model is overfitting with the training data
     - This is expected, as the model gets more and more used to the same training set it is given
-    - In addition, there is not much regularization for this model as of right now
+    - A potential modification to the model would be to enforce more regularization techniques
+
+## 10 Prediction Results:
+![image](https://user-images.githubusercontent.com/98120760/200203414-36545fcc-637d-413a-b53f-3ee87747e480.png)
+![image](https://user-images.githubusercontent.com/98120760/200203425-e58e4b73-173f-494b-8776-60516e75f1fc.png)
+![image](https://user-images.githubusercontent.com/98120760/200203445-468a7765-4dd4-4133-8d37-b22a5d424e5a.png)
+![image](https://user-images.githubusercontent.com/98120760/200203458-6d3d9112-f09a-4a09-8b3e-74716ba6d04a.png)
