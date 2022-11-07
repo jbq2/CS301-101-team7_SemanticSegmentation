@@ -1,4 +1,5 @@
 # Baseline Performance
+# Team Members: Peter Akdemir, Joshua Quizon
 
 ## UNet Explanation
 UNet is a deep learning architecture that is often used for its performance in image recognition.  It is a neural network, and it possesses qualities that other neural networks have--an input layer, and an output layer.  The output layer ultimately decides the outcome, and therefore must be completely connected with the preceding layer's nodes.  However, the hidden layers of UNet are quite different from other neural networks in the sense that they have a set of filters.  These filters are responsible for recognizing certain details and patterns of an image.  For example, in the first convolutional layer, one of its filters can be responsible for detecing edge patterns, which is the more simple yet fundamental steps in image recognition.  Essentially, UNet is a model for classification problems involving images. 
