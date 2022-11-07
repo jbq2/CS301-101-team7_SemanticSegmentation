@@ -50,19 +50,35 @@ Given these values, the mask_dataset is looped through to convert the rgb to one
 Note that the previous step gives each pixel in the data set a value between 0 and 5 inclusive.  However, this is not categorical, meaning a pixel being part of a road is not determined with a simple yes or no.  Therefore, the dataset is split over the 6 classes--building, land, road, vegetation, water, and unlabeled.  This is similar to the kaggle dataset for the Logistic Regression homework assignment, where there were several features as columns that held a value 0 or 1.
 
 ## Training and Validation Epochs vs Loss Plot
-![image](https://user-images.githubusercontent.com/98120760/200203234-8f3aa131-6ef6-469c-85f8-342879df930f.png)
+![image](https://user-images.githubusercontent.com/98120760/200227623-c1bfdab7-fc7c-414e-b23f-2bb1ff23a6a7.png)
 - The above image depicts the relationship between the number of epochs and loss
-- The loss function used in this program is combination of dice loss and focal loss, termed as total_loss 
+- The loss function used in this program is a combination of dice loss and focal loss, termed as total_loss 
 - The model was trained for 100 epochs total, and the loss was calculated for each epoch in the validation set and the training set
 - The training set loss gradually lessens as the number of epochs increases--this is expected since we are using the same training set for each epoch
 - However, the validation set loss seems to have the right approach until about 30-40 epochs
-    - There is a slight rise in validation loss as the number of epochs passes the 30 or 40 range
+    - There is a rise in validation loss as the number of epochs passes the 30 or 40 range
     - This implies that the model is overfitting with the training data
     - This is expected, as the model gets more and more used to the same training set it is given
-    - A potential modification to the model would be to enforce more regularization techniques
+    - A potential modification to the model would be to enforce more regularization techniques or use a different optimization strategy
+    - the current optimizer used was adam, but because this is a baseline performance, this was not changed
 
 ## 10 Prediction Results:
-![image](https://user-images.githubusercontent.com/98120760/200203414-36545fcc-637d-413a-b53f-3ee87747e480.png)
-![image](https://user-images.githubusercontent.com/98120760/200203425-e58e4b73-173f-494b-8776-60516e75f1fc.png)
-![image](https://user-images.githubusercontent.com/98120760/200203445-468a7765-4dd4-4133-8d37-b22a5d424e5a.png)
-![image](https://user-images.githubusercontent.com/98120760/200203458-6d3d9112-f09a-4a09-8b3e-74716ba6d04a.png)
+![image](https://user-images.githubusercontent.com/98120760/200227893-e092ad46-27b9-45e1-b449-eb203b0a6043.png)
+![image](https://user-images.githubusercontent.com/98120760/200227919-9cf30b8a-5bb6-47fb-a37f-69fda30d92f8.png)
+![image](https://user-images.githubusercontent.com/98120760/200227954-b36be0f9-84fa-4f52-81a9-0118436e1476.png)
+![image](https://user-images.githubusercontent.com/98120760/200227987-e4874f59-79cb-42ae-8bf9-ad5e8e61c0d2.png)
+- The majority of the predictions are quite good
+- The prediction mask closely matches the label masks
+- The model seem to hesitate when identifying roads--parts of the roads are unidentified, and thus there are breaks in the segmentation (predictions 1, 8, and 9)
+
+## Precision-Recall Plot
+![image](https://user-images.githubusercontent.com/98120760/200228467-4131c282-2bce-4b76-a9b4-3732508ec4d2.png)
+- The resulting precision and recall curve was obtained upon using the following metrics: keras.metrics.Precision() and keras.metrics.Recall()
+- As the model was training, the information regarding each epoch was printed--the precision ranged from approximately 0.81 to 0.92, while the recall ranged from 0.38 to 0.91
+- Note: the recall value rose as the model trained
+- The resulting precision and recall curve has a strange shape, and does not have much area under it
+    - This may imply that the model has low precision and low recall
+    - However, that implication is contradictory to the actual precision and recall values that were obtained from training
+    - Below is a snippet of the precision and recall values towards the end of the model's training run
+![image](https://user-images.githubusercontent.com/98120760/200229050-2d404430-3a9f-4ef8-83d4-25ac7fcc7579.png)
+- Overall, the training the model seems to yield quite high precision and recall values
