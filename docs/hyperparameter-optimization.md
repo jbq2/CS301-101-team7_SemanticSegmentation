@@ -23,14 +23,33 @@ From running the baseline test on the model, the main issue that was noticed was
 - batch size: 16
 
 A lower dropout rate and batch size can provide implicit regularization to the model, as the model will be given smaller input and each layer will output less--this will increase the noise of the overall output and may ultimately lead to a more general model.  However, the values for dropout rate and batch size are already quite low.  Therefore, hyperparameter optimization will be utilized to find the most suitable values for the three hyperparameters of interest in this project.  The specific hyperparameter optimization strategy for Team 7 is BOHB (Bayesian Optimization and Hyperband) which combines the accuracy of Bayesian Optimization and the speed of Hyperband.  Both of the components that make up BOHB will be explained at a high level below.
-## Bayesian Optimization
-TODO
 
-## Hyperband
-TODO
+## Bayesian Optimization and Hyperband (BOHB)
+Solid hyperparameters are important because they can make or break a model.  Too high of a learning rate will likely cause too much noise for the model, thus causing underfitting.  If too many epochs are used, the model will likely overfit the training data, thus leading to a high difference in training and validation loss.  While a programmer can brute force the finding of the right hyperparameters, such a task is tedious and may result in never actually finding the most optimal hyperparameter configurations.  BOHB is a technique that uses aspects of two different hyperparameter optimization techniques: Bayesian Optimization and Hyperband.  Essentially, BOHB makes use of Bayesian Optimization's awareness of previous calculations and Hyperband's speed to optimize hyperparameters in an efficient manner.  Before getting into the BOHB algorithm, it is important to briefly go over Bayesian Optimization and Hyperband first.
 
-## Combining the 2 Hyperparameter Optimization Algorithms
-TODO
+### Bayesian Optimization (BO)
+Consider hyperparameter configuration space $\mathbb{H}$; this is essentially, the proposed "best" values for each hyperparameter in question.  These individual values can be inputted in some black box function $f$.  The goal of BO is to approximate $f$, which will in turn lead to the best possible hyperparameters for the model.  The output of $f(\mathbb{H})$ is the error on the validation set--minimizing this error implies that the approximate function is close to the true black box function.<br>
+
+There are two functions that are important for BO:
+- Surrogate function: this is the function that will constantly be updated, and will eventually act as the approximate to the black box function
+- Acquisition function: looks for the next set of hyperparameters to test that can potentially lead to a lower error on the validation set (the issue here is that this is sort of a blind guess because the shape of $f$ is not known, as it is a black box)
+
+An example of an acquisition function is Expected Improvement, which describes areas in which there the surrogate function is return high error, and those are areas of improvement.  Therefore, the strategy with Expected Improvement is to take find the value $x$ that leads to the maximum value $a(x)$ that Expected Improvement will return--this will be the next hyperparameter setting to check for.
+
+Bayesian Optimization tends to converge in less iterations compared to other optimization methods.  This is because BO is an informed search method--the next set of hyperparameter configurations to be tested is based on the previously tested configurations.  However, Bayesian Optimization still takes a while because each evaluation for the next configuration is expensive--you must calculate the next best value to test for each hyperparameter and also update the surrogate function.
+
+### Hyperband
+Consider multiple hyperparameters, each having a set of possible values that will be tested.  If 3 hyperparameters have 10 possible values each, then there are 1000 possible configurations that need to be considered.  This number increases greatly as the number of hyperparameters and possible values for each hyperparameter increases.  Therefore, hyperparameter optimization can be a slow and tedious process.  The aim of Hyperband is to lessen the time it takes to evaluate possible hyperparameter configurations.  The basic steps for Hyperband is as follows:
+- Sample a set of configurations from the set of all configurations
+- The model is trained with each set of configurations
+    - scrap the configurations that lead to relatively bad performance
+    - keep the configurations that lead to relative good performance, focusing on additional hyperparameters in the configurations
+
+The above steps prompts the following question: what are the "good" and "bad" configurations?  Another aspect of Hyperband is that it uses Successive Halving.  In this procedure, 50% of the sampled configurations are scrapped, while 50% are moved on to the next phase.  At each iteration of Hyperband, the sample size of configurations to be tested is cut in half until there is only 1 configuration left.
+
+Successive Halving allows for Hyperband to reach convergence much quicker than other optimization techniques given small or medium sized budgets.  However, it is important to note that the input configurations are sampled randomly.  Therefore, the convergence of Hyperband essentially relies on how lucky the programmer can get with the randomly sampled configuration set.  The optimal configuration, compared to Bayesian Optimization, may not actually yield the best possible hyperparameter values.
+
+### BOHB Algorithm
 
 ## Resulting BOHB Optimized Hyperparameters
 TODO
