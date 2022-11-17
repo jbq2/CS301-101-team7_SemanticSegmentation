@@ -39,17 +39,21 @@ An example of an acquisition function is Expected Improvement, which describes a
 Bayesian Optimization tends to converge in less iterations compared to other optimization methods.  This is because BO is an informed search method--the next set of hyperparameter configurations to be tested is based on the previously tested configurations.  However, Bayesian Optimization still takes a while because each evaluation for the next configuration is expensive--you must calculate the next best value to test for each hyperparameter and also update the surrogate function.
 
 ### Hyperband
-Consider multiple hyperparameters, each having a set of possible values that will be tested.  If 3 hyperparameters have 10 possible values each, then there are 1000 possible configurations that need to be considered.  This number increases greatly as the number of hyperparameters and possible values for each hyperparameter increases.  Therefore, hyperparameter optimization can be a slow and tedious process.  The aim of Hyperband is to lessen the time it takes to evaluate possible hyperparameter configurations.  The basic steps for Hyperband is as follows:
+Consider multiple hyperparameters, each having a set of possible values that will be tested.  If 3 hyperparameters have 10 possible values each, then 1000 possible configurations need to be considered.  This number increases greatly as the number of hyperparameters and possible values for each hyperparameter increase.  Therefore, hyperparameter optimization can be a slow and tedious process.  Hyperband aims to lessen the time it takes to evaluate possible hyperparameter configurations.  The basic steps for Hyperband are as follows:
 - Sample a set of configurations from the set of all configurations
 - The model is trained with each set of configurations
     - scrap the configurations that lead to relatively bad performance
-    - keep the configurations that lead to relative good performance, focusing on additional hyperparameters in the configurations
+    - keep the configurations that lead to relatively good performance, focusing on additional hyperparameters in the configurations
 
-The above steps prompts the following question: what are the "good" and "bad" configurations?  Another aspect of Hyperband is that it uses Successive Halving.  In this procedure, 50% of the sampled configurations are scrapped, while 50% are moved on to the next phase.  At each iteration of Hyperband, the sample size of configurations to be tested is cut in half until there is only 1 configuration left.
+The above steps prompt the following question: what are the "good" and "bad" configurations?  Another aspect of Hyperband is that it uses Successive Halving.  In this procedure, 50% of the sampled configurations are scrapped, while 50% are moved on to the next phase.  At each iteration of Hyperband, the sample size of configurations to be tested is cut in half until there is only 1 configuration left.  The issue with Successive Halving is that it is a hyperparameter optimizer that also has hyperparameters.  For Successive Halving, you must decide the number of input configurations, how long you would like to train the model based on those configurations (budget), and how many times you want to cut the sample in half.<br>
 
-Successive Halving allows for Hyperband to reach convergence much quicker than other optimization techniques given small or medium sized budgets.  However, it is important to note that the input configurations are sampled randomly.  Therefore, the convergence of Hyperband essentially relies on how lucky the programmer can get with the randomly sampled configuration set.  The optimal configuration, compared to Bayesian Optimization, may not actually yield the best possible hyperparameter values.
-
+Hyperband fixes the above issue of Successive Halving's lack of robustness by trying multiple splitting settings.  The two extremes of splitting are (1) not splitting the samples at all and (2) splitting the samples until there is only 1 configuration left.  Hyperband tries both of those extremes, as well as the splitting settings in between the extremes.  In other words, Hyperband tries multiple ways of splitting the samples and assesses the output configurations that survived the splits. However, Hyperband is still susceptible to the fact that the input configurations are sampled at random.  Therefore, convergence to an "optimal" configuration may not lead to the most optimal hyperparameter values.
 ### BOHB Algorithm
+BOHB combines the informed search of Bayesian Optimization with the speed of Hyperband.  The process is as follows:
+- Use Hyperband; but store the validation information regarding each (configuration, budget) pair
+- Once enough pairs and their validation scores have been collected, fit a surrogate model to it
+- With the existence of a surrogate model, use an acquisition function to find the specific hyperparameter values that yield the maximum of the acquisition function
+- Continue to random sample using Hyperband, as this updates the surrogate model by adding some noise to it which will increase the overall model's generalization and prevent it from overfitting
 
 ## Resulting BOHB Optimized Hyperparameters
 TODO
