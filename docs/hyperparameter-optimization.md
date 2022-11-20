@@ -1,6 +1,7 @@
 # Hyperparameter Optimization Using BOHB (Bayesian Optimization and Hyperband)
 
 # Team Members: Peter Akdemir, Joshua Quizon
+# HPO Method for Team 7: Method 7 (BOHB)
 
 ## Hyperparameter Optimization
 When training a model, certain values will be tweaked by the model itself.  For example, one of these values could be the weights associated with any sort of regression model.  In the logistic regression homework assignment, the main idea was to train the model (sigmoid) by updating the weights associated with each feature through gradient descent.  These trainable values are called model parameters.<br>
