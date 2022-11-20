@@ -19,7 +19,7 @@ It is important to note that there is another category of variables in supervise
 
 Depending on the overall model, a wide variety of hyperparameters will be in play.  Specifically for this project, the clear hyperparameters that are not completely hidden inside the UNet black box are the learning rate, the number of epochs, type of optimizer, and batch size. <br>
 
-From running the baseline test on the model, the main issue that was noticed was the model was overfitting the training set.  As stated in the markdown file [baseline-performance.md](baseline-performance.md), this could be due to the number of epochs being set to too high of a number (100 in the baseline test).  Other properties were unexplored at the time when baseline-performance.md was written (during milestone-2), but will be explored in this milestone.  These other properties of interest are learning rate, dropout rate, batch size, and optimizer.  The baseline values for these hyperparameters are as follows:
+From running the baseline test on the model, the main issue that was noticed was the model was overfitting the training set.  As stated in the markdown file [baseline-performance.md](baseline-performance.md), this could be due to the number of epochs being set to too high of a number (100 in the baseline test).  Other properties were unexplored at the time when baseline-performance.md was written (during milestone-2), but will be explored in this milestone.  These properties of interest are learning rate, dropout rate, batch size, and optimizer.  The baseline values for these hyperparameters are as follows:
 - learning rate: 0.001 (adam optimizer)
 - batch size: 16
 - optimizer: adam
@@ -61,13 +61,40 @@ BOHB combines the informed search of Bayesian Optimization with the speed of Hyp
 - Continue to random sample using Hyperband, as this updates the surrogate model by adding some noise to it which will increase the overall model's generalization and prevent it from overfitting
 
 ## Resulting BOHB Optimized Hyperparameters
-TODO
+### Test Results after 15 successive halving operations with BOHB
+![image](https://user-images.githubusercontent.com/98120760/202926943-29f08607-af38-429f-8e84-d2c21ef6169a.png)
+- A short test performed by Joshua Quizon
+- This was the result of running BOHB for n = 5 iterations, which resulted in 15 successive halving iterations
+- The resulting data depicts the hyperparameter configuration space that is used for each line--this configuration was used to train and assess the model for that successive halving iteration
+- Note: SGD momentum is only used when the optimizer was SGD; if SGD is not used, the SGD momentum is ignored
+
+### Results after 35 successive halving operations with BOHB
+![image](https://user-images.githubusercontent.com/98120760/202926892-befbd9bd-3746-48e8-bff5-8bc4c43e1c59.png)
+- A BOHB run performed by Peter Akdemir
+- This was the result of running BOHB for 35 successive halving iterations
+- The resulting data, again, depicts each hyperparameter configuration and the model's loss from using that configuration
+- The configuration on the last line contains the most optimal hyperparameter configuration
+    - Learning rate: 0.004740049723020277
+    - Batch size: 9
+    - Optimizer: Adam
 
 ## Training and Validation Epochs vs Loss
-TODO
-
-## 10 Prediction Results
-TODO
+![image](https://user-images.githubusercontent.com/98120760/202927013-d0391ec1-997a-4c58-9634-b0b637c027d9.png)
+- Comparing this training and validation epochs vs loss graph from the one produced in milestone 2, it can be seen that the model is not overfitting the training data as much anymore
+- This is likely due to the ability to find the most optimal hyperparameters
+- Although the loss is not nearly as low as the one from milestone 2, there is only a small difference
+- Despite the slightly higher loss coming from the "optimal" hyperparameters, the model is no longer overfitting the training set which implies a more generalized model 
 
 ## Precision and Recall Values
-TODO
+![image](https://user-images.githubusercontent.com/98120760/202927153-9c682fcc-b982-4b94-94e7-473bbc716b5a.png)
+- Much like the precision and recall graph from milestone 2, the above graph is quite chaotic
+- There is not much area under the curve which may imply that the model is lacking performance, but this is rather contradictory:
+    - Recall values increase as the number of epochs increase--this is the desired and expected behavior
+    - Precision values fluctuate, but ultimately converge to values of around 0.81 to 0.84
+- The reason for the abnormal precision and recall curve is due to the fluctuations of the precision and recall values at earlier epochs when training the model
+
+## 10 Best Prediction Results
+![image](https://user-images.githubusercontent.com/98120760/202927065-fa1830d4-7d5e-4f0c-ac8a-c40b4e5fd582.png)
+![image](https://user-images.githubusercontent.com/98120760/202927084-a8d3a7e8-3429-4b3e-9589-74664537addc.png)
+![image](https://user-images.githubusercontent.com/98120760/202927105-3d713d2f-6187-47e6-9b96-a700bd64a5b1.png)
+![image](https://user-images.githubusercontent.com/98120760/202927113-c3f95f69-a980-4e88-8925-a4ce837890bc.png)
