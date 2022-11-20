@@ -61,7 +61,7 @@ BOHB combines the informed search of Bayesian Optimization with the speed of Hyp
 - With the existence of a surrogate model, use an acquisition function to find the specific hyperparameter values that yield the maximum of the acquisition function
 - Continue to random sample using Hyperband, as this updates the surrogate model by adding some noise to it which will increase the overall model's generalization and prevent it from overfitting
 
-## Resulting BOHB Optimized Hyperparameters
+## Resulting BOHB Optimized Hyperparameters Using HpBandster's BOHB Package
 ### Test Results after 15 successive halving operations with BOHB
 ![image](https://user-images.githubusercontent.com/98120760/202926943-29f08607-af38-429f-8e84-d2c21ef6169a.png)
 - A short test performed by Joshua Quizon
