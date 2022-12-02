@@ -42,9 +42,9 @@ the same.  However, due to the smaller size of it, it must be trained with diffe
 <p>
 To preface the explanation of knowledge and how it can be applied to this scenario, recall that UNET
 is a model comprised on an ensemble of smaller, simpler models.  It is a neural network, therefore it 
-contains numerous neurons.  Therefore, according to the seminal paper, the smaller model can be trained 
-with the probabilities of each class produced/predicted by the larger model.  These probabilities are termed as
-"soft targets" for the smaller model, and will be used to train it.  There is a chance for the soft targets to yield
+contains numerous neurons.  Therefore, the smaller can be trained on a transfer set (which can be the
+original training set) while also considering the probability distributions of the classes for each
+case in the transfer set.  These probabilities are termed as "soft targets" for the smaller model.  There is a chance for the soft targets to yield
 high entropy which implies greater information gain for each data point.  This allows the smaller model to be trained
 with smaller data sets.
 </p>  
@@ -54,5 +54,14 @@ However, it is stated in the seminal paper that this may be an issue because spe
 probabilities for certain classes.  To resolve this problem, the logit values of the probabilities will
 be used rather than the raw probabilities themselves.  According to the paper, the class probabilities produced
 by a neural network put the logit values through a softmax layer which then outputs the probability of each class:
-$$q_i = \frac{exp(z_i/T)}{sum_{j}^{}exp(z_j)/T}$$
+$$q_i = \frac{exp(z_i/T)}{\sum_{j}^{}exp(z_j)/T}$$
 </p>
+
+<p>
+A main improvement to this method is to train the smaller, "distilled" model to produce the correct labels for the data.
+A way to do this is by using the correct labels to modify the soft targets--this will allow the distilled model to 
+produce probability distributions that indicate the likelihood of a case to be a certain class.  However, the authors of 
+the seminal paper propose a different method using 2 objective functions: 1st is a cross entropy function with the soft targets,
+and 2nd is the cross entropy with the correct labels. 
+</p>
+
