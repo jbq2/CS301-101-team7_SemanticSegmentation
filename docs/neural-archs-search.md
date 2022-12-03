@@ -62,6 +62,68 @@ A main improvement to this method is to train the smaller, "distilled" model to 
 A way to do this is by using the correct labels to modify the soft targets--this will allow the distilled model to 
 produce probability distributions that indicate the likelihood of a case to be a certain class.  However, the authors of 
 the seminal paper propose a different method using 2 objective functions: 1st is a cross entropy function with the soft targets,
-and 2nd is the cross entropy with the correct labels. 
+and 2nd is the cross entropy with the correct labels.  As will be explained in the next section, the Colab Notebook associated with this project attempts to implement the method of knowledge distillation discussed in the seminal paper. 
 </p>
 
+## Implemention Of Knowledge Distillation
+<p>
+The first step in the implementation involves training the original model which will act as a teacher model.  The following is a short summary of the information regarding the teacher model:
+
+- teacher model is a UNET model returned by the function multi_teacher_unet_model
+- teacher model has 10 layers
+    - 4 downscaling (c1, c2, c3, c4)
+        - c1: 16 filters
+        - c2: 32 filters
+        - c3: 64 filters
+        - c4: 128 filters
+    - a final downscaling layer with 256 filters, no max pooling (c5)
+    - 4 upscaling layers (u6, u7, u8, u9)
+        - u6: 128 filters
+        - u7: 64 filters
+        - u8: 32 filters
+        - u9: 16 filters
+    - 1 output layer (activation function being softmax)
+- the teacher outputs softmax values
+
+The teacher needs to be trained because it will provide predictions to batched datasets.  These predictions will act as the knowledge that will be "distilled" so that the student can train with it.
+</p>
+
+<p>
+The second step is to implement a student model.  Generally, student models will have less trainable parameters than the teacher model to it being "smaller" and more compact.  For this project, the student model has less filters per layer.  Below is a short summary of the information regarding the student model:
+
+- student model is also a UNET model, returned by the function multi_student_unet_model
+- model has the same number of layers (10):
+    - 4 downscaling layers with maxpooling (c1, c2, c3, c4)
+        - c1: 4 filters
+        - c2: 8 filters
+        - c3: 16 filters
+        - c4: 32 filters
+    - a final downscaling layer with 64 filters, no max pooling (c5)
+    - 4 upscaling layers (u6, u7, u8, u9)
+        - u6: 32 filters
+        - u7: 16 filters
+        - u8: 8 filters
+        - u9: 4 filters
+    - 1 output layer (activation function being softmax)
+- the student also outputs softmax values
+
+</p>
+
+<p>
+The next step is to build the Distiller class which extends keras's Model class.  This Distiller class essentially trains the student model given the teacher's predictions.  Since Distiller is a subclass of Model, it inherits the functions defined in Model, and also overrides some of those methods (as it should because Distiller must train the student model differentyl which requires a different implementation).  The following is a list of overridden methods and a brief overview of what they do:
+
+- compile: does what compile would normally do with a regular keras Model object.  It accepts new parameters that were not experimented with before this milestone; student_loss_fn, distillation_loss_fn, alpha, and temperature
+- call: a function that implements the forward pass of the Model; it is implicitly called by doing model(x_data, training=True/False)
+- train_step: implicitly called by fit().  train_step is called whenever the model must be trained with a new batch of data.
+- test_step: implicitly called by evaluate(), or fit() when the validation_data parameter is set
+
+The most important function that was implemented is train_step, as this is the inner workings of actuall training the model and fitting data to it.  The process of Colab notebook's train_step implemention in Distiller is as follows:
+1. pass data to it
+2. predict using the teacher model
+3. predict using the student model
+4. find the distillation loss using the distillation_loss_fn, and multiply the result by the squared temperature $T^2$
+5. find the overall loss with the following equation: $loss = \alpha \cdot loss_{student} + (1 - \alpha) \cdot loss_{distillation}$
+6. compute the gradient with respect to each of the student's trainable variables
+7. apply the gradients to the used optimizer (Adam in this case) 
+8. return the results of that single pass (student_loss and distillation_loss)
+</p>
