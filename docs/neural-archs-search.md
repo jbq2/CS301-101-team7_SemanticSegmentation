@@ -127,3 +127,30 @@ The most important function that was implemented is train_step, as this is the i
 7. apply the gradients to the used optimizer (Adam in this case) 
 8. return the results of that single pass (student_loss and distillation_loss)
 </p>
+
+
+# Student Results
+
+## Important Notes Regarding Training Issues:
+- there was quite some difficulty getting the teacher and student to train properly
+- on some instances, the models seemed to not learn at all, while in other instances they did seem to train
+- a pattern was found that if the number of epochs was set too high, the teacher would not learn properly
+- as a result, teacher training was limited to 5 epochs
+- the only way for the student to be trained properly is if it is given proper predictions from a well trained/functioning teacher model
+- due to limited compute units left, the student could only train for 15 epochs from a teacher that was trained for 5 epochs (due to issues mentioned in the previous bullets)
+
+## Training and Validation Loss Plot:
+![image](https://user-images.githubusercontent.com/98120760/205477387-e135ec6e-b752-41a1-a6ca-fc87a0175c29.png)
+
+## Student Predictions
+![image](https://user-images.githubusercontent.com/98120760/205477411-a54d8af5-6857-4f74-8f89-b0d1bb535429.png)
+![image](https://user-images.githubusercontent.com/98120760/205477436-695b6bbe-c98f-4d05-b27b-8fa456f95b99.png)
+![image](https://user-images.githubusercontent.com/98120760/205477448-e1d92b51-79d0-4cd2-86f9-2d326826e294.png)
+![image](https://user-images.githubusercontent.com/98120760/205477459-778dd5e9-b36d-4336-a9d5-a7a87a51b9a4.png)
+
+## Precision and Recall:
+- these values were not readily available due to the usage of sparse categorical cross entropy as the loss function for the teacher and student models
+- a switch this loss function was required to calculate the distillation loss of the Distiller properly
+- sparse categorical cross entropy does not evaluate on one hot encoded ground truths
+- precision and recall values are built from one hot encoded ground truths
+- unfortunately, this requirement could not be met in this milestone
